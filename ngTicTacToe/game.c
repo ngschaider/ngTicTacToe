@@ -4,35 +4,42 @@
 #include <assert.h>
 
 #include "game.h"
+#include "bot.h"
 #include "utils.h"
 
-Game game_create(int mode) {
+void game_reset(Game* game) {
+	for (int i = 0; i < 9; i++) {
+		game->cells[i] = 0;
+	}
+
+	// decide randomly who starts
+	game->currentPlayer = (rand() % 2) + 1;
+}
+
+Game game_create(PlayerType playerType1, PlayerType playerType2) {
 	Game game = {
-		{ // cells
-			0, 0, 0,
-			0, 0, 0,
-			0, 0, 0
-		},
-		mode, // mode
-		1, // currentPlayer
-		0, // gamesTotal
-		0, // gamesWon1
-		0, // gamesLost1
-		0, // gamesWon2
-		0, // gamesLost2
+		{0, 0, 0, 0, 0, 0, 0, 0, 0}, // int cells[9];
+		playerType1, // PlayerType player1Type;
+		playerType2, // PlayerType player2Type;
+
+		1, // int currentPlayer;
+
+		0, // int gamesTotal;
+		0, // int gamesWon1;
+		0, // int gamesLost1;
+		0, // int gamesWon2;
+		0, // int gamesLost2;
 	};
+
+	game_reset(&game);
 
 	return game;
 }
 
 void game_print_stats(Game* game) {
-	if (game->mode == 1) {
-		wprintf(L"Spiele gesamt: %d\tSpieler 1 gewonnen: %d\tSpieler 2 gewonnen: %d\n", game->gamesTotal, game->gamesWon1, game->gamesWon2);
-	}
-	else {
-		wprintf(L"Spiele gesamt: %d\tSpieler 1 gewonnen: %d\tComputer gewonnen: %d\n", game->gamesTotal, game->gamesWon1, game->gamesWon2);
-	}
-	
+	wprintf(L"Spiele gesamt: %d\t", game->gamesTotal);
+	wprintf(L"%ls gewonnen: %d\t", bot_get_name(game->player1Type), game->gamesWon1);
+	wprintf(L"%ls gewonnen: %d\n", bot_get_name(game->player2Type), game->gamesWon2);
 }
 
 bool check(int* cells, int offset, int stepsize) {

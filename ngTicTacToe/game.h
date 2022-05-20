@@ -1,10 +1,20 @@
 #ifndef H_GRID
 #define H_GRID
 
+#define PLAYERTYPE_LENGTH 3
+
+typedef enum {
+	Human = 1,
+	Minimax = 2,
+	MisterR = 3,
+} PlayerType;
+
 typedef struct {
 	int cells[9];
-	int mode;
-	int currentPlayer;
+	PlayerType player1Type;
+	PlayerType player2Type;
+
+	int currentPlayer; // will be 1 or 2 depending on which player's turn it is
 
 	// Statistics
 	int gamesTotal;
@@ -16,7 +26,9 @@ typedef struct {
 
 extern void game_print_stats(Game*);
 
-extern Game game_create(int);
+extern void game_reset(Game*);
+
+extern Game game_create(PlayerType, PlayerType);
 
 extern int game_get_winner(Game*);
 

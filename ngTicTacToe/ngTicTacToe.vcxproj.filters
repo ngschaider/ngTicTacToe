@@ -24,18 +24,12 @@
     <ClCompile Include="bot.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="utils.c">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="bot.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="utils.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
