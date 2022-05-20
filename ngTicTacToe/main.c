@@ -118,7 +118,7 @@ PlayerType prompt_PlayerType(int player_number) {
 	}
 
 	int choice = 0;
-	while (choice < 1 || choice > 2) {
+	while (choice < 1 || choice > PLAYERTYPE_LENGTH) {
 		wprintf(L"Ihre Auswahl: ");
 		auto _ = scanf_s("%d", &choice);
 		flushStdin();
@@ -126,7 +126,7 @@ PlayerType prompt_PlayerType(int player_number) {
 
 	wprintf(L"\n");
 
-	assert(choice >= 1 && choice <= 2);
+	assert(choice >= 1 && choice <= PLAYERTYPE_LENGTH);
 	return (PlayerType)choice;
 }
 

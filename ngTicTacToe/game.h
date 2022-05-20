@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #ifndef H_GRID
 #define H_GRID
 
@@ -33,5 +35,9 @@ extern Game game_create(PlayerType, PlayerType);
 extern int game_get_winner(Game*);
 
 extern void game_print(Game*);
+
+extern void game_get_empty_cells(Game*, int*, int*);
+
+extern bool game_is_cell_empty(Game*, int);
 
 #endif

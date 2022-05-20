@@ -16,6 +16,28 @@ void game_reset(Game* game) {
 	game->currentPlayer = (rand() % 2) + 1;
 }
 
+/**
+ * @description Calculate an array containing the indices of empty cells
+ * @param int* count The place to store the number of empty cells
+ * @return int* out The place to store the cell indices (this gets dynamically allocated)
+ */
+void game_get_empty_cells(Game* game, int* out, int* count) {
+	// fill the array with the indices
+	int index = 0;
+	for (int i = 0; i < 9; i++) {
+		if (game_is_cell_empty(game, i)) {
+			out[index] = i;
+			index++;
+		}
+	}
+
+	*count = index;
+}
+
+bool game_is_cell_empty(Game* game, int i) {
+	return game->cells[i] == 0;
+}
+
 Game game_create(PlayerType playerType1, PlayerType playerType2) {
 	Game game = {
 		{0, 0, 0, 0, 0, 0, 0, 0, 0}, // int cells[9];
@@ -107,6 +129,9 @@ void game_print(Game* game) {
 }
 
 int game_get_winner(Game* game) {
+	// Todo: Don't even bother to check this when the game is not at least 5 moves old
+	// A tic-tac-toe game is unwinnable before 5 moves have been made
+
 	// Top Row
 	if (check(game->cells, 0, 1)) {
 		return game->cells[0];
