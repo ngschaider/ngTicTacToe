@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ngTicTacToe", "ngTicTacToe\ngTicTacToe.vcxproj", "{787B4BE8-96A5-49B7-AFD2-9D08A95B6B37}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ngTicTacToe", "ngTicTacToe.vcxproj", "{787B4BE8-96A5-49B7-AFD2-9D08A95B6B37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

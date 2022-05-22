@@ -12,9 +12,12 @@
 #include <math.h>
 #include <time.h>
 
+#include "compat.h"
 #include "game.h"
 #include "bot.h"
 #include "utils.h"
+
+
 
 void flushStdin(void) {
 	while (getchar() != '\n');
@@ -34,7 +37,7 @@ int get_choice(Game* game) {
 		int choice = 0;
 		while (choice < 1 || choice > 9) {
 			wprintf(L"Ihre Auswahl: ");
-			auto _ = scanf("%d", &choice);
+			scanf_s("%d", &choice);
 			flushStdin();
 		}
 		return choice - 1;

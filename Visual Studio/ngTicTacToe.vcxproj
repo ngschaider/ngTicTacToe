@@ -18,6 +18,20 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\bot.c" />
+    <ClCompile Include="..\src\game.c" />
+    <ClCompile Include="..\src\main.c" />
+    <ClCompile Include="..\src\minimax.c" />
+    <ClCompile Include="..\src\utils.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\bot.h" />
+    <ClInclude Include="..\src\compat.h" />
+    <ClInclude Include="..\src\game.h" />
+    <ClInclude Include="..\src\minimax.h" />
+    <ClInclude Include="..\src\utils.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -139,17 +153,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="bot.c" />
-    <ClCompile Include="game.c" />
-    <ClCompile Include="main.c" />
-    <ClCompile Include="minimax.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="bot.h" />
-    <ClInclude Include="game.h" />
-    <ClInclude Include="minimax.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
