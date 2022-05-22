@@ -37,7 +37,7 @@ int get_choice(Game* game) {
 		int choice = 0;
 		while (choice < 1 || choice > 9) {
 			wprintf(L"Ihre Auswahl: ");
-			scanf_s("%d", &choice);
+			scanf("%d", &choice);
 			flushStdin();
 		}
 		return choice - 1;
@@ -135,7 +135,7 @@ PlayerType prompt_PlayerType(int player_number) {
 	int choice = 0;
 	while (choice < 1 || choice > PLAYERTYPE_LENGTH) {
 		wprintf(L"Ihre Auswahl: ");
-		auto _ = scanf_s("%d", &choice);
+		scanf("%d", &choice);
 		flushStdin();
 	}
 
@@ -150,7 +150,7 @@ int prompt_amount_of_rounds() {
 	int choice = 0;
 	while (choice < 1) {
 		wprintf(L"Wieviele Runden sollen gespielt werden: ");
-		auto _ = scanf_s("%d", &choice);
+		scanf("%d", &choice);
 		flushStdin();
 	}
 
@@ -164,7 +164,7 @@ bool prompt_play_again(void) {
 	char choice = '_';
 	while (choice != 'j' && choice != 'n') {
 		wprintf(L"Noch ein Spiel? [j/n] ");
-		auto _ = scanf("%c", &choice);
+		scanf("%c", &choice);
 		flushStdin();
 	}
 
@@ -179,7 +179,7 @@ int main() {
 
 	// set stdout stream to UTF-16
 	// we can now use wprintf but we can't use printf anymore
-	auto _ = _setmode(_fileno(stdout), _O_U16TEXT);
+	_setmode(_fileno(stdout), _O_U16TEXT);
 
 	// Setup font family and font size
 	CONSOLE_FONT_INFOEX cfi = {
@@ -205,7 +205,7 @@ int main() {
 		int choice = -1;
 		while (choice < 1 || choice > 3) {
 			wprintf(L"Ihre Auswahl: ");
-			auto _ = scanf_s("%d", &choice);
+			scanf("%d", &choice);
 			flushStdin();
 		}
 
