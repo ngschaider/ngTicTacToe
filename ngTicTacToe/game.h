@@ -3,12 +3,14 @@
 #ifndef H_GRID
 #define H_GRID
 
-#define PLAYERTYPE_LENGTH 3
+#define PLAYERTYPE_LENGTH 5
 
 typedef enum {
 	Human = 1,
 	Minimax = 2,
 	MisterR = 3,
+	OneLayer = 4,
+	TwoLayer = 5,
 } PlayerType;
 
 typedef struct {
@@ -26,7 +28,8 @@ typedef struct {
 	int gamesLost2;
 } Game;
 
-extern void game_print_stats(Game*);
+extern void game_print_extended_stats(Game*);
+extern void game_print_simple_stats(Game*);
 
 extern void game_reset(Game*);
 
@@ -39,5 +42,7 @@ extern void game_print(Game*);
 extern void game_get_empty_cells(Game*, int*, int*);
 
 extern bool game_is_cell_empty(Game*, int);
+
+extern Game game_copy(Game*);
 
 #endif

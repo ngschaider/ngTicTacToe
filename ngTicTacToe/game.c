@@ -7,14 +7,8 @@
 #include "bot.h"
 #include "utils.h"
 
-void game_reset(Game* game) {
-	for (int i = 0; i < 9; i++) {
-		game->cells[i] = 0;
-	}
 
-	// decide randomly who starts
-	game->currentPlayer = (rand() % 2) + 1;
-}
+#ifndef DONOTDEFINE_Utilities
 
 /**
  * @description Calculate an array containing the indices of empty cells
@@ -38,6 +32,25 @@ bool game_is_cell_empty(Game* game, int i) {
 	return game->cells[i] == 0;
 }
 
+Game game_copy(Game* game) {
+	Game copy = game_create(game->player1Type, game->player2Type);
+	for (int i = 0; i < 9; i++) {
+		copy.cells[i] = game->cells[i];
+	}
+	copy.currentPlayer = game->currentPlayer;
+	copy.gamesTotal = game->gamesTotal;
+	copy.gamesWon1 = game->gamesWon1;
+	copy.gamesLost1 = game->gamesLost1;
+	copy.gamesWon2 = game->gamesWon2;
+	copy.gamesLost2 = game->gamesLost2;
+
+	return copy;
+}
+
+#endif
+
+#ifndef DONOTDEFINE_Lifecycle_Functions
+
 Game game_create(PlayerType playerType1, PlayerType playerType2) {
 	Game game = {
 		{0, 0, 0, 0, 0, 0, 0, 0, 0}, // int cells[9];
@@ -58,18 +71,36 @@ Game game_create(PlayerType playerType1, PlayerType playerType2) {
 	return game;
 }
 
-void game_print_stats(Game* game) {
+void game_reset(Game* game) {
+	for (int i = 0; i < 9; i++) {
+		game->cells[i] = 0;
+	}
+
+	// decide randomly who starts
+	game->currentPlayer = (rand() % 2) + 1;
+}
+
+#endif
+
+#ifndef DONOTDEFINE_Printing
+
+void game_print_simple_stats(Game* game) {
 	wprintf(L"Spiele gesamt: %d\t", game->gamesTotal);
 	wprintf(L"%ls gewonnen: %d\t", bot_get_name(game->player1Type), game->gamesWon1);
 	wprintf(L"%ls gewonnen: %d\n", bot_get_name(game->player2Type), game->gamesWon2);
 }
 
-bool check(int* cells, int offset, int stepsize) {
-	return cells[offset] != 0
-		&& cells[offset] == cells[offset + stepsize]
-		&& cells[offset] == cells[offset + stepsize * 2];
+void game_print_extended_stats(Game* game) {
+	wprintf(L"                          Spieler 1    Spieler 2\n");
+	wprintf(L"Typ                       %9ls    %9ls\n", bot_get_name(game->player1Type), bot_get_name(game->player2Type));
+	wprintf(L"Spiele gewonnen           %9d    %9d\n", game->gamesWon1, game->gamesWon2);
+	wprintf(L"Spiele gewonnen (%%)       %9.2f    %9.2f\n", (double)game->gamesWon1 / game->gamesTotal * 100, (double)game->gamesWon2 / game->gamesTotal * 100);
+	wprintf(L"Spiele verloren           %9d    %9d\n", game->gamesLost1, game->gamesLost2);
+	wprintf(L"Spiele verloren (%%)       %9.2f    %9.2f\n", (double)game->gamesLost1 / game->gamesTotal * 100, (double)game->gamesLost2 / game->gamesTotal * 100);
+	wprintf(L"Spiele unentschieden      %9d\n", game->gamesTotal - game->gamesLost1 - game->gamesWon1);
+	wprintf(L"Spiele unentschieden (%%)  %9.2f\n", ((double)game->gamesTotal - game->gamesLost1 - game->gamesWon1) / game->gamesTotal * 100);
+	wprintf(L"\n");
 }
-
 
 void print_cell_part(int cell, int part, int index) {
 	assert(part >= 0 && part <= 4);
@@ -128,6 +159,19 @@ void game_print(Game* game) {
 	}
 }
 
+#endif
+
+
+bool check(int* cells, int offset, int stepsize) {
+	return cells[offset] != 0
+		&& cells[offset] == cells[offset + stepsize]
+		&& cells[offset] == cells[offset + stepsize * 2];
+}
+
+/**
+ * @description Returns the winner of the given game by looking at the cell's states
+ * @return int -1 if the game has not ended yet, 0 if the game is a draw, 1 if player1 won, 2 if player2 won
+ */
 int game_get_winner(Game* game) {
 	// Todo: Don't even bother to check this when the game is not at least 5 moves old
 	// A tic-tac-toe game is unwinnable before 5 moves have been made
@@ -158,7 +202,7 @@ int game_get_winner(Game* game) {
 	}
 
 	// Right column
-	if (check(game->cells, 3, 3)) {
+	if (check(game->cells, 2, 3)) {
 		return game->cells[2];
 	}
 
@@ -173,18 +217,18 @@ int game_get_winner(Game* game) {
 	}
 
 	if (game->cells[0] != 0
-		&& game->cells[0] == game->cells[1]
-		&& game->cells[1] == game->cells[2]
-		&& game->cells[2] == game->cells[3]
-		&& game->cells[3] == game->cells[4]
-		&& game->cells[4] == game->cells[5]
-		&& game->cells[5] == game->cells[6]
-		&& game->cells[6] == game->cells[7]
-		&& game->cells[7] == game->cells[8]) {
+		&& game->cells[1] != 0
+		&& game->cells[2] != 0
+		&& game->cells[3] != 0
+		&& game->cells[4] != 0
+		&& game->cells[5] != 0
+		&& game->cells[6] != 0
+		&& game->cells[7] != 0
+		&& game->cells[8] != 0) {
 		// Alle Felder sind befüllt
 		// Unentschieden
-		return -1;
+		return 0;
 	}
 
-	return 0;
+	return -1;
 }

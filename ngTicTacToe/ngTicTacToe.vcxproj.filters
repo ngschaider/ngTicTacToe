@@ -24,12 +24,18 @@
     <ClCompile Include="bot.c">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="minimax.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="bot.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="minimax.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,8 +4,7 @@
 #ifndef H_BOT
 #define H_BOT
 
-extern int minimax_choice(Game*);
-extern int misterr_choice(Game*);
+extern int bot_choice(Game*, PlayerType);
 
 extern wchar_t* bot_get_name(PlayerType);
 

@@ -28,7 +28,7 @@ int get_choice(Game* game) {
 		system("CLS");
 		game_print(game);
 		wprintf(L"\n");
-		game_print_stats(game);
+		game_print_simple_stats(game);
 		wprintf(L"\n");
 
 		int choice = 0;
@@ -37,24 +37,25 @@ int get_choice(Game* game) {
 			auto _ = scanf("%d", &choice);
 			flushStdin();
 		}
-		return choice;
+		return choice - 1;
 	}
-	else if (playerType == MisterR) {
-		return misterr_choice(game);
+	else {
+		return bot_choice(game, playerType);
 	}
-	else if (playerType == Minimax) {
-		return minimax_choice(game);
-	}
+
+
+	assert(false);
 
 	return -1;
 }
 
 
-void play_game(Game* game) {
+void play_game(Game* game, bool verbose) {
 	game_reset(game);
-	while (game_get_winner(game) == 0) {
+	while (game_get_winner(game) == -1) {
 		int choice = get_choice(game);
-		game->cells[choice - 1] = game->currentPlayer;
+		assert(choice >= 0 && choice <= 8);
+		game->cells[choice] = game->currentPlayer;
 
 		assert(game->currentPlayer == 1 || game->currentPlayer == 2);
 		if (game->currentPlayer == 1) {
@@ -65,30 +66,39 @@ void play_game(Game* game) {
 		}
 	}
 
-	system("CLS");
-	game_print(game);
-	wprintf(L"\n");
-	game_print_stats(game);
-	wprintf(L"\n");
-
 	int winner = game_get_winner(game);
 
 	game->gamesTotal++;
 
 	assert(winner >= 0 && winner <= 2);
 
-	if (winner == 0) {
-		wprintf(L"Unentschieden!\n\n");
-	}
-	else if (winner == 1) {
-		const wchar_t* player1Name = bot_get_name(game->player1Type);
-		wprintf(L"Gewinner: %ls\n", player1Name);
+	if (winner == 1) {
 		game->gamesWon1++;
 		game->gamesLost2++;
 	}
 	else if (winner == 2) {
-		const wchar_t* player2Name = bot_get_name(game->player2Type);
-		wprintf(L"Gewinner: %ls\n", player2Name);
+		game->gamesWon2++;
+		game->gamesLost1++;
+	}
+
+	if (verbose) {
+		system("CLS");
+		game_print(game);
+		wprintf(L"\n");
+		game_print_simple_stats(game);
+		wprintf(L"\n");
+
+		if (winner == 0) {
+			wprintf(L"Unentschieden!\n");
+		}
+		else if (winner == 1) {
+			const wchar_t* player1Name = bot_get_name(game->player1Type);
+			wprintf(L"Gewinner: %ls (Spieler 1 | X)\n", player1Name);
+		}
+		else if (winner == 2) {
+			const wchar_t* player2Name = bot_get_name(game->player2Type);
+			wprintf(L"Gewinner: %ls (Spieler 2 | O)\n", player2Name);
+		}
 	}
 }
 
@@ -108,6 +118,8 @@ void print_header(void) {
 	wprintf(L"Kompilierzeitpunkt: %ls, %ls\n", dateStr, timeStr);
 	wprintf(L"\n");
 }
+
+#ifndef DONOTDEFINE_Prompts
 
 PlayerType prompt_PlayerType(int player_number) {
 	wprintf(L"--- Typ für Spieler %d ---\n", player_number);
@@ -130,6 +142,21 @@ PlayerType prompt_PlayerType(int player_number) {
 	return (PlayerType)choice;
 }
 
+int prompt_amount_of_rounds() {
+	wprintf(L"--- Rundenanzahl ---\n");
+	int choice = 0;
+	while (choice < 1) {
+		wprintf(L"Wieviele Runden sollen gespielt werden: ");
+		auto _ = scanf_s("%d", &choice);
+		flushStdin();
+	}
+
+	wprintf(L"\n");
+
+	assert(choice >= 1);
+	return choice;
+}
+
 bool prompt_play_again(void) {
 	char choice = '_';
 	while (choice != 'j' && choice != 'n') {
@@ -141,6 +168,8 @@ bool prompt_play_again(void) {
 	return choice == 'j';
 }
 
+#endif
+
 int main() {
 	// seed the random number generator with the system time (only once!)
 	srand((unsigned int)time(NULL));
@@ -150,28 +179,84 @@ int main() {
 	auto _ = _setmode(_fileno(stdout), _O_U16TEXT);
 
 	// Setup font family and font size
-	CONSOLE_FONT_INFOEX cfi;
-	cfi.cbSize = sizeof cfi;
-	cfi.nFont = 0;
-	cfi.dwFontSize.X = 10;
-	cfi.dwFontSize.Y = 20;
-	cfi.FontFamily = FF_DONTCARE;
-	cfi.FontWeight = FW_NORMAL;
+	CONSOLE_FONT_INFOEX cfi = {
+		sizeof cfi, // cbSize
+		0, // nFont
+		{10, 20}, // dwFontSize.X, dwFontSize.Y
+		FF_DONTCARE, // FontFamily
+		FW_NORMAL, // FontWeight
+	};
 	wcscpy_s(cfi.FaceName, 9, L"Consolas");
 	SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), false, &cfi);
 
-	system("CLS");
-	print_header();
-	PlayerType playerType1 = prompt_PlayerType(1);
-	PlayerType playerType2 = prompt_PlayerType(2);
+	while (true) {
+		system("CLS");
+		print_header();
 
-	// create a game (this will be reused for folllowing games as it will also keep track of stats)
-	Game game = game_create(playerType1, playerType2);
+		wprintf(L"--- Hauptmenü ---\n");
+		wprintf(L"[1] Spielen\n");
+		wprintf(L"[2] Bot Benchmark\n");
+		wprintf(L"[3] Beenden\n");
+		wprintf(L"\n");
 
-	bool play_again = true;
-	while (play_again) {
-		play_game(&game);
-		play_again = prompt_play_again();
+		int choice = -1;
+		while (choice < 1 || choice > 3) {
+			wprintf(L"Ihre Auswahl: ");
+			auto _ = scanf_s("%d", &choice);
+			flushStdin();
+		}
+
+		if (choice == 1) {
+			PlayerType playerType1 = prompt_PlayerType(1);
+			PlayerType playerType2 = prompt_PlayerType(2);
+
+			// create a game (this will be reused for folllowing games as it will also keep track of stats)
+			Game game = game_create(playerType1, playerType2);
+
+			if (game.player1Type == Human || game.player2Type == Human) {
+				bool play_again = true;
+				while (play_again) {
+					play_game(&game, true);
+					play_again = prompt_play_again();
+				}
+			}
+			else {
+				int amount_of_rounds = prompt_amount_of_rounds();
+				for (int i = 0; i < amount_of_rounds; i++) {
+					play_game(&game, false);
+				}
+			}
+
+			system("CLS");
+			print_header();
+			game_print_extended_stats(&game);
+			system("PAUSE");
+		}
+		else if (choice == 2) {
+			wprintf(L"\n");
+			int amount_of_rounds = prompt_amount_of_rounds();
+			system("CLS");
+			wprintf(L"                               Spieler 1 gew.     Spieler 2 gew.     Unentschieden\n");
+			for (int bot1 = 2; bot1 <= PLAYERTYPE_LENGTH; bot1++) {
+				for (int bot2 = 2; bot2 <= PLAYERTYPE_LENGTH; bot2++) {
+					Game game = game_create(bot1, bot2);
+
+					for (int i = 0; i < amount_of_rounds; i++) {
+						play_game(&game, false);
+					}
+
+					double won1 = (double)game.gamesWon1 / game.gamesTotal * 100;
+					double won2 = (double)game.gamesWon2 / game.gamesTotal * 100;
+					double draw = ((double)game.gamesTotal - game.gamesWon1 - game.gamesWon2) / game.gamesTotal * 100;
+					wprintf(L"%-9ls  gegen  %-9ls:  %14.2f%%    %14.2f%%    %13.2f%%\n", bot_get_name(bot1), bot_get_name(bot2), won1, won2, draw);
+				}
+			}
+			wprintf(L"\n");
+			system("PAUSE");
+		}
+		else if (choice == 3) {
+			break;
+		}
 	}
 
 	wprintf(L"\n");
@@ -180,8 +265,3 @@ int main() {
 	system("PAUSE");
 	return EXIT_SUCCESS;
 }
-
-
-// Todo:
-// Sound Effekte beim Setzen einer Zelle
-// Melodie beim Gewinnen/Verlieren
