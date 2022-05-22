@@ -1,5 +1,5 @@
-#ifndef H_UTILS
-#define H_UTILS
+#ifndef UTILS_H_INCLUDED
+#define UTILS_H_INCLUDED
 
 #define BORDER_BLACK 178
 #define BORDER_GRAY 177

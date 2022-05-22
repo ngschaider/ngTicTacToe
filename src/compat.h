@@ -1,5 +1,5 @@
-#ifndef H_COMBAT
-#define H_COMBAT
+#ifndef COMPAT_H_INCLUDED
+#define COMPAT_H_INCLUDED
 
 #ifndef _MSC_VER
 

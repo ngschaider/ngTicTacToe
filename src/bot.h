@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include "game.h"
 
-#ifndef H_BOT
-#define H_BOT
+#ifndef BOT_H_INCLUDED
+#define BOT_H_INCLUDED
 
 extern int bot_choice(Game*, PlayerType);
 

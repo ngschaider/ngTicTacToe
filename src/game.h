@@ -1,7 +1,7 @@
 #include <stdbool.h>
 
-#ifndef H_GRID
-#define H_GRID
+#ifndef GAME_H_INCLUDED
+#define GAME_H_INCLUDED
 
 #define PLAYERTYPE_LENGTH 5
 
