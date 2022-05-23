@@ -16,40 +16,13 @@
 #include "game.h"
 #include "bot.h"
 #include "utils.h"
-
-
-
-void flushStdin(void) {
-	while (getchar() != '\n');
-}
+#include "player.h"
 
 int get_choice(Game* game) {
 	assert(game->currentPlayer == 1 || game->currentPlayer == 2);
-	PlayerType playerType = game->currentPlayer == 1 ? game->player1Type : game->player2Type;
+	Player* player = game->currentPlayer == 1 ? game->player1 : game->player2;
 
-	if (playerType == Human) {
-		system("CLS");
-		game_print(game);
-		wprintf(L"\n");
-		game_print_simple_stats(game);
-		wprintf(L"\n");
-
-		int choice = 0;
-		while (choice < 1 || choice > 9) {
-			wprintf(L"Ihre Auswahl: ");
-			scanf("%d", &choice);
-			flushStdin();
-		}
-		return choice - 1;
-	}
-	else {
-		return bot_choice(game, playerType);
-	}
-
-
-	assert(false);
-
-	return -1;
+	return player->get_move(game);
 }
 
 
@@ -95,12 +68,10 @@ void play_game(Game* game, bool verbose) {
 			wprintf(L"Unentschieden!\n");
 		}
 		else if (winner == 1) {
-			const wchar_t* player1Name = bot_get_name(game->player1Type);
-			wprintf(L"Gewinner: %ls (Spieler 1 | X)\n", player1Name);
+			wprintf(L"Gewinner: %ls (Spieler 1 | X)\n", game->player1->name);
 		}
 		else if (winner == 2) {
-			const wchar_t* player2Name = bot_get_name(game->player2Type);
-			wprintf(L"Gewinner: %ls (Spieler 2 | O)\n", player2Name);
+			wprintf(L"Gewinner: %ls (Spieler 2 | O)\n", game->player1->name);
 		}
 	}
 }
@@ -124,25 +95,26 @@ void print_header(void) {
 
 #ifndef DONOTDEFINE_Prompts
 
-PlayerType prompt_PlayerType(int player_number) {
+Player* prompt_player(int player_number) {
 	wprintf(L"--- Typ für Spieler %d ---\n", player_number);
-	for (int i = 0; i < PLAYERTYPE_LENGTH; i++) {
-		wchar_t* prefix = i == 0 ? L"" : L"BOT - ";
-		wchar_t* name = bot_get_name(i + 1);
-		wprintf(L"[%d] %ls%ls\n", i + 1, prefix, name);
+	for (int i = 0; i < player_get_amount(); i++) {
+		Player* player = player_get(i);
+		wchar_t* prefix = player->type == Human ? L"" : L"BOT - ";;
+		wprintf(L"[%d] %ls%ls\n", i + 1, prefix, player->name);
 	}
 
 	int choice = 0;
-	while (choice < 1 || choice > PLAYERTYPE_LENGTH) {
+	while (choice < 1 || choice > player_get_amount()) {
 		wprintf(L"Ihre Auswahl: ");
 		scanf("%d", &choice);
-		flushStdin();
+		flush_stdin();
 	}
 
 	wprintf(L"\n");
 
-	assert(choice >= 1 && choice <= PLAYERTYPE_LENGTH);
-	return (PlayerType)choice;
+	int player_id = choice - 1;
+	assert(player_id >= 0 && player_id < player_get_amount());
+	return player_get(player_id);
 }
 
 int prompt_amount_of_rounds() {
@@ -151,7 +123,7 @@ int prompt_amount_of_rounds() {
 	while (choice < 1) {
 		wprintf(L"Wieviele Runden sollen gespielt werden: ");
 		scanf("%d", &choice);
-		flushStdin();
+		flush_stdin();
 	}
 
 	wprintf(L"\n");
@@ -165,13 +137,47 @@ bool prompt_play_again(void) {
 	while (choice != 'j' && choice != 'n') {
 		wprintf(L"Noch ein Spiel? [j/n] ");
 		scanf("%c", &choice);
-		flushStdin();
+		flush_stdin();
 	}
 
 	return choice == 'j';
 }
 
 #endif
+
+void bot_benchmark() {
+	wprintf(L"\n");
+	int amount_of_rounds = prompt_amount_of_rounds();
+	system("CLS");
+	print_header();
+	wprintf(L"------------------------------ BOT BENCHMARK (%d ROUNDS) ------------------------------\n", amount_of_rounds);
+	wprintf(L"                               Spieler 1 gew.     Spieler 2 gew.     Unentschieden\n");
+	for (int index1 = 0; index1 < player_get_amount(); index1++) {
+		Player* player1 = player_get(index1);
+		if (player1->type == Human) {
+			continue;
+		}
+		for (int index2 = 0; index2 < player_get_amount(); index2++) {
+			Player* player2 = player_get(index2);
+			if (player2->type == Human) {
+				continue;
+			}
+
+			Game game = game_create(player1, player2);
+
+			for (int i = 0; i < amount_of_rounds; i++) {
+				play_game(&game, false);
+			}
+
+			double won1 = (double)game.gamesWon1 / game.gamesTotal * 100;
+			double won2 = (double)game.gamesWon2 / game.gamesTotal * 100;
+			double draw = ((double)game.gamesTotal - game.gamesWon1 - game.gamesWon2) / game.gamesTotal * 100;
+			wprintf(L"%-9ls  gegen  %-9ls:  %14.2f%%    %14.2f%%    %13.2f%%\n", player1->name, player2->name, won1, won2, draw);
+		}
+	}
+	wprintf(L"\n");
+	system("PAUSE");
+}
 
 int main() {
 	// seed the random number generator with the system time (only once!)
@@ -180,6 +186,9 @@ int main() {
 	// set stdout stream to UTF-16
 	// we can now use wprintf but we can't use printf anymore
 	_setmode(_fileno(stdout), _O_U16TEXT);
+
+	// setup bots and human player interface
+	player_init();
 
 	// Setup font family and font size
 	CONSOLE_FONT_INFOEX cfi = {
@@ -206,17 +215,17 @@ int main() {
 		while (choice < 1 || choice > 3) {
 			wprintf(L"Ihre Auswahl: ");
 			scanf("%d", &choice);
-			flushStdin();
+			flush_stdin();
 		}
 
 		if (choice == 1) {
-			PlayerType playerType1 = prompt_PlayerType(1);
-			PlayerType playerType2 = prompt_PlayerType(2);
+			Player* player1 = prompt_player(1);
+			Player* player2 = prompt_player(2);
 
 			// create a game (this will be reused for folllowing games as it will also keep track of stats)
-			Game game = game_create(playerType1, playerType2);
+			Game game = game_create(player1, player2);
 
-			if (game.player1Type == Human || game.player2Type == Human) {
+			if (game.player1->type == Human || game.player2->type == Human) {
 				bool play_again = true;
 				while (play_again) {
 					play_game(&game, true);
@@ -236,26 +245,7 @@ int main() {
 			system("PAUSE");
 		}
 		else if (choice == 2) {
-			wprintf(L"\n");
-			int amount_of_rounds = prompt_amount_of_rounds();
-			system("CLS");
-			wprintf(L"                               Spieler 1 gew.     Spieler 2 gew.     Unentschieden\n");
-			for (int bot1 = 2; bot1 <= PLAYERTYPE_LENGTH; bot1++) {
-				for (int bot2 = 2; bot2 <= PLAYERTYPE_LENGTH; bot2++) {
-					Game game = game_create(bot1, bot2);
-
-					for (int i = 0; i < amount_of_rounds; i++) {
-						play_game(&game, false);
-					}
-
-					double won1 = (double)game.gamesWon1 / game.gamesTotal * 100;
-					double won2 = (double)game.gamesWon2 / game.gamesTotal * 100;
-					double draw = ((double)game.gamesTotal - game.gamesWon1 - game.gamesWon2) / game.gamesTotal * 100;
-					wprintf(L"%-9ls  gegen  %-9ls:  %14.2f%%    %14.2f%%    %13.2f%%\n", bot_get_name(bot1), bot_get_name(bot2), won1, won2, draw);
-				}
-			}
-			wprintf(L"\n");
-			system("PAUSE");
+			bot_benchmark();
 		}
 		else if (choice == 3) {
 			break;

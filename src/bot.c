@@ -3,37 +3,8 @@
 
 #include "bot.h"
 #include "game.h"
-#include "minimax.h"
 
-wchar_t* bot_get_name(PlayerType playerType) {
-	assert(playerType >= 1 && playerType <= PLAYERTYPE_LENGTH);
-
-	if (playerType == Human) {
-		return L"Mensch";
-	}
-	else if (playerType == Minimax) {
-		return L"Minimax";
-	}
-	else if (playerType == MisterR) {
-		return L"Mister R.";
-	}
-	else if (playerType == OneLayer) {
-		return L"OneLayer";
-	}
-	else if (playerType == TwoLayer) {
-		return L"TwoLayer";
-	}
-
-	return L"Fehler";
-}
-
-
-
-/**
- * @description Returns the cell index chosen by the legend itself, Mister R. (R stands for random)
- * @return the index of a randomly selected cell
- */
-int misterr_choice(Game* game) {
+int misterr_get_move(Game* game) {
 	int count;
 	int empty[9];
 
@@ -48,12 +19,7 @@ int misterr_choice(Game* game) {
 	return empty[index];
 }
 
-
-/**
- * @description Returns the cell index chosen by the legend itself, OneLayer (because he thinks one move ahead)
- * @return the index of a randomly selected cell
- */
-int onelayer_choice(Game* game) {
+int onelayer_get_move(Game* game) {
 	int count;
 	int empty[9];
 
@@ -80,11 +46,7 @@ int onelayer_choice(Game* game) {
 	return empty[index];
 }
 
-/**
- * @description Returns the cell index chosen by the legend itself, TwoLayer (because he thinks two moves ahead)
- * @return the index of a randomly selected cell
- */
-int twolayer_choice(Game* game) {
+int twolayer_get_move(Game* game) {
 	int count1;
 	int empty1[9];
 
@@ -127,21 +89,102 @@ int twolayer_choice(Game* game) {
 	return empty1[index];
 }
 
-int bot_choice(Game* game, PlayerType playerType) {
-	assert(playerType > 1 && playerType <= PLAYERTYPE_LENGTH);
-	if (playerType == MisterR) {
-		return misterr_choice(game);
+
+
+#ifndef DONOTDEFINE_Minimax
+
+
+// In order to understand minimax see the following article series:
+// https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-1-introduction/
+// https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-2-evaluation-function/
+// https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-3-tic-tac-toe-ai-finding-optimal-move/
+
+
+int minimax_helper(Game* game, int depth, bool isMaximizerPlaying) {
+	int winner = game_get_winner(game);
+	if (winner == 0) {
+		// Draw
+		return 0;
 	}
-	else if (playerType == Minimax) {
-		return minimax_choice(game);
+	else if (winner == 1) {
+		return 10;
 	}
-	else if (playerType == OneLayer) {
-		return onelayer_choice(game);
-	}
-	else if (playerType == TwoLayer) {
-		return twolayer_choice(game);
+	else if (winner == 2) {
+		return -10;
 	}
 
+	int empty[9];
+	int count;
+	game_get_empty_cells(game, empty, &count);
+
+	if (isMaximizerPlaying) {
+		int best = -100;
+		for (int i = 0; i < count; i++) {
+			int index = empty[i];
+			game->cells[index] = 1;
+
+			int value = minimax_helper(game, depth + 1, false);
+			if (value > best) {
+				best = value;
+			}
+
+			// Undo move
+			game->cells[index] = 0;
+		}
+
+		return best;
+	}
+	else {
+		// Minimizer is playing
+		int best = 100;
+		for (int i = 0; i < count; i++) {
+			int index = empty[i];
+			game->cells[index] = 2;
+
+			int value = minimax_helper(game, depth + 1, true);
+			if (value < best) {
+				best = value;
+			}
+
+			// Undo move
+			game->cells[index] = 0;
+		}
+
+		return best;
+	}
+
+	// we should never get here
 	assert(false);
 	return -1;
 }
+
+int minimax_get_move(Game* game) {
+	Game copy = game_copy(game);
+
+	bool isMaximizer = copy.currentPlayer == 1;
+
+	int best_choice = -1;
+	int best_value = isMaximizer ? -100 : 100;
+
+	int empty[9];
+	int count;
+	game_get_empty_cells(game, empty, &count);
+	for (int i = 0; i < count; i++) {
+		int index = empty[i];
+		copy.cells[index] = copy.currentPlayer;
+
+		int value = minimax_helper(&copy, 0, !isMaximizer);
+		if ((isMaximizer && value > best_value) || (!isMaximizer && value < best_value)) {
+			best_value = value;
+			best_choice = index;
+		}
+
+		// Undo move
+		copy.cells[index] = 0;
+	}
+
+	assert(best_choice != -1);
+	return best_choice;
+}
+
+#endif

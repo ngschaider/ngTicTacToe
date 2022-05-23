@@ -1,22 +1,13 @@
-#include <stdbool.h>
-
 #ifndef GAME_H_INCLUDED
 #define GAME_H_INCLUDED
 
-#define PLAYERTYPE_LENGTH 5
+#include <stdbool.h>
+#include "player.h"
 
-typedef enum {
-	Human = 1,
-	Minimax = 2,
-	MisterR = 3,
-	OneLayer = 4,
-	TwoLayer = 5,
-} PlayerType;
-
-typedef struct {
+typedef struct GameStruct {
 	int cells[9];
-	PlayerType player1Type;
-	PlayerType player2Type;
+	Player* player1;
+	Player* player2;
 
 	int currentPlayer; // will be 1 or 2 depending on which player's turn it is
 
@@ -33,7 +24,7 @@ extern void game_print_simple_stats(Game*);
 
 extern void game_reset(Game*);
 
-extern Game game_create(PlayerType, PlayerType);
+extern Game game_create(Player*, Player*);
 
 extern int game_get_winner(Game*);
 

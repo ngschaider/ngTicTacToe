@@ -22,14 +22,14 @@
     <ClCompile Include="..\src\bot.c" />
     <ClCompile Include="..\src\game.c" />
     <ClCompile Include="..\src\main.c" />
-    <ClCompile Include="..\src\minimax.c" />
+    <ClCompile Include="..\src\player.c" />
     <ClCompile Include="..\src\utils.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\bot.h" />
     <ClInclude Include="..\src\compat.h" />
     <ClInclude Include="..\src\game.h" />
-    <ClInclude Include="..\src\minimax.h" />
+    <ClInclude Include="..\src\player.h" />
     <ClInclude Include="..\src\utils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -56,7 +56,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -131,7 +131,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <CompileAs>CompileAsC</CompileAs>
-      <DisableSpecificWarnings>6031</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4996;6031</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,6 +146,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <DisableSpecificWarnings>4996;6031</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

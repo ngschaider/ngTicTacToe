@@ -15,37 +15,37 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\utils.c">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\bot.c">
-      <Filter>Headerdateien</Filter>
+      <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="..\src\game.c">
-      <Filter>Headerdateien</Filter>
+      <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="..\src\main.c">
-      <Filter>Headerdateien</Filter>
+      <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\minimax.c">
-      <Filter>Headerdateien</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\utils.c">
-      <Filter>Headerdateien</Filter>
+    <ClCompile Include="..\src\player.c">
+      <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\utils.h">
-      <Filter>Quelldateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\minimax.h">
-      <Filter>Quelldateien</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\game.h">
-      <Filter>Quelldateien</Filter>
+    <ClInclude Include="..\src\bot.h">
+      <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="..\src\compat.h">
-      <Filter>Quelldateien</Filter>
+      <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\bot.h">
-      <Filter>Quelldateien</Filter>
+    <ClInclude Include="..\src\game.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\utils.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\player.h">
+      <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

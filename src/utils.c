@@ -6,6 +6,6 @@
 #include "utils.h"
 
 
-void SetFont(int width, int height) {
-	
+void flush_stdin(void) {
+	while (getchar() != '\n');
 }

@@ -4,8 +4,9 @@
 #ifndef BOT_H_INCLUDED
 #define BOT_H_INCLUDED
 
-extern int bot_choice(Game*, PlayerType);
-
-extern wchar_t* bot_get_name(PlayerType);
+extern int misterr_get_move(Game*);
+extern int minimax_get_move(Game*);
+extern int onelayer_get_move(Game*);
+extern int twolayer_get_move(Game*);
 
 #endif

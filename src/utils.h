@@ -6,6 +6,6 @@
 #define BORDER_WHITE 176
 #define BORDER_THICK 219
 
-extern void SetFont(int, int);
+extern void flush_stdin(void);
 
 #endif

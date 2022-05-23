@@ -33,7 +33,7 @@ bool game_is_cell_empty(Game* game, int i) {
 }
 
 Game game_copy(Game* game) {
-	Game copy = game_create(game->player1Type, game->player2Type);
+	Game copy = game_create(game->player1, game->player2);
 	for (int i = 0; i < 9; i++) {
 		copy.cells[i] = game->cells[i];
 	}
@@ -51,11 +51,11 @@ Game game_copy(Game* game) {
 
 #ifndef DONOTDEFINE_Lifecycle_Functions
 
-Game game_create(PlayerType playerType1, PlayerType playerType2) {
+Game game_create(Player* player1, Player* player2) {
 	Game game = {
 		{0, 0, 0, 0, 0, 0, 0, 0, 0}, // int cells[9];
-		playerType1, // PlayerType player1Type;
-		playerType2, // PlayerType player2Type;
+		player1, // Player player1;
+		player2, // Player player2;
 
 		1, // int currentPlayer;
 
@@ -86,13 +86,13 @@ void game_reset(Game* game) {
 
 void game_print_simple_stats(Game* game) {
 	wprintf(L"Spiele gesamt: %d\t", game->gamesTotal);
-	wprintf(L"%ls gewonnen: %d\t", bot_get_name(game->player1Type), game->gamesWon1);
-	wprintf(L"%ls gewonnen: %d\n", bot_get_name(game->player2Type), game->gamesWon2);
+	wprintf(L"%ls gewonnen: %d\t", game->player1->name, game->gamesWon1);
+	wprintf(L"%ls gewonnen: %d\n", game->player2->name, game->gamesWon2);
 }
 
 void game_print_extended_stats(Game* game) {
 	wprintf(L"                          Spieler 1    Spieler 2\n");
-	wprintf(L"Typ                       %9ls    %9ls\n", bot_get_name(game->player1Type), bot_get_name(game->player2Type));
+	wprintf(L"Typ                       %9ls    %9ls\n", game->player1->name, game->player2->name);
 	wprintf(L"Spiele gewonnen           %9d    %9d\n", game->gamesWon1, game->gamesWon2);
 	wprintf(L"Spiele gewonnen (%%)       %9.2f    %9.2f\n", (double)game->gamesWon1 / game->gamesTotal * 100, (double)game->gamesWon2 / game->gamesTotal * 100);
 	wprintf(L"Spiele verloren           %9d    %9d\n", game->gamesLost1, game->gamesLost2);
