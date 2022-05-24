@@ -9,8 +9,6 @@
 #include "bot.h"
 
 
-#define PLAYER_MAX_SIZE 100
-
 int used = 0;
 Player players[PLAYER_MAX_SIZE];
 

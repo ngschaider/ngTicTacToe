@@ -11,11 +11,13 @@
 #include <assert.h>
 #include <math.h>
 #include <time.h>
+#include <wchar.h>
 
 #include "game.h"
 #include "bot.h"
 #include "utils.h"
 #include "player.h"
+#include "menu.h"
 
 int get_choice(Game* game) {
 	assert(game->currentPlayer == 1 || game->currentPlayer == 2);
@@ -100,20 +102,25 @@ Player* prompt_player(int player_number) {
 	color_cyan();
 	wprintf(L"--- Typ für Spieler %d ---\n", player_number);
 	color_white();
+
+	wchar_t* entries[PLAYER_MAX_SIZE];
 	for (int i = 0; i < PLAYER_get_amount(); i++) {
 		Player* player = PLAYER_get(i);
-		wchar_t* prefix = player->type == Human ? L"" : L"BOT - ";;
-		wprintf(L"[%d] %ls%ls\n", i + 1, prefix, player->name);
+		wchar_t* prefix = player->type == Human ? L"" : L"BOT - ";
+
+		wchar_t* result = calloc(100, sizeof(wchar_t));
+		wsprintf(result, L"%ls%ls", prefix, player->name);
+		entries[i] = result;
 	}
 
-	int choice = 0;
-	while (choice < 1 || choice > PLAYER_get_amount()) {
-		wprintf(L"Ihre Auswahl: ");
-		scanf("%d", &choice);
-		flush_stdin();
-	}
+	Menu menu = MENU_create(entries, PLAYER_get_amount());
+	int choice = MENU_prompt(&menu);
 
 	wprintf(L"\n");
+
+	for (int i = 0; i < PLAYER_get_amount(); i++) {
+		free(entries[i]);
+	}
 
 	int player_id = choice - 1;
 	assert(player_id >= 0 && player_id < PLAYER_get_amount());
@@ -121,7 +128,9 @@ Player* prompt_player(int player_number) {
 }
 
 int prompt_amount_of_rounds() {
+	color_cyan();
 	wprintf(L"--- Rundenanzahl ---\n");
+	color_white();
 	int choice = 0;
 	while (choice < 1) {
 		wprintf(L"Wieviele Runden sollen gespielt werden: ");
@@ -136,14 +145,15 @@ int prompt_amount_of_rounds() {
 }
 
 bool prompt_play_again(void) {
-	char choice = '_';
-	while (choice != 'j' && choice != 'n') {
-		wprintf(L"Noch ein Spiel? [j/n] ");
-		scanf(" %c", &choice);
-		flush_stdin();
-	}
+	wchar_t* entries[2] = { L"Ja", L"Nein" };
+	Menu menu = MENU_create(entries, 2);
+	
+	color_cyan();
+	wprintf(L"Noch ein Spiel?");
+	color_white();
+	int choice = MENU_prompt(&menu);
 
-	return choice == 'j';
+	return choice == 1;
 }
 
 #endif
@@ -206,20 +216,14 @@ int main() {
 		system("CLS");
 		print_header();
 
+		
 		color_cyan();
 		wprintf(L"--- Hauptmenü ---\n");
 		color_white();
-		wprintf(L"[1] Spielen\n");
-		wprintf(L"[2] Bot Benchmark\n");
-		wprintf(L"[3] Beenden\n");
-		wprintf(L"\n");
 
-		int choice = -1;
-		while (choice < 1 || choice > 3) {
-			wprintf(L"Ihre Auswahl: ");
-			scanf("%d", &choice);
-			flush_stdin();
-		}
+		wchar_t* mainMenuEntries[3] = { L"Spielen", L"Bot Benchmark", L"Beenden" };
+		Menu mainMenu = MENU_create(mainMenuEntries, 3);
+		int choice = MENU_prompt(&mainMenu);
 
 		wprintf(L"\n");
 

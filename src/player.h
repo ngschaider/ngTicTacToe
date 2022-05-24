@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 
+#define PLAYER_MAX_SIZE 100
+
 typedef struct GameStruct Game;
 
 typedef enum {
