@@ -79,6 +79,7 @@ void print_header(void) {
 	// to be used with wprintf (remember, we cant use the normal printf anymore);
 	size_t charsConverted = 0;
 	wchar_t dateStr[100];
+
 	mbstowcs_s(&charsConverted, dateStr, 100, __DATE__, _TRUNCATE);
 	wchar_t timeStr[100];
 	mbstowcs_s(&charsConverted, timeStr, 100, __TIME__, _TRUNCATE);
@@ -86,15 +87,19 @@ void print_header(void) {
 	// Clear the screen and output some information about the program
 	// as well as the game mode selection menu
 	system("CLS");
+	color_cyan();
 	wprintf(L"Tic Tac Toe v1.0 - Niklas Gschaider\n");
 	wprintf(L"Kompilierzeitpunkt: %ls, %ls\n", dateStr, timeStr);
+	color_white();
 	wprintf(L"\n");
 }
 
 #ifndef DONOTDEFINE_Prompts
 
 Player* prompt_player(int player_number) {
+	color_cyan();
 	wprintf(L"--- Typ für Spieler %d ---\n", player_number);
+	color_white();
 	for (int i = 0; i < player_get_amount(); i++) {
 		Player* player = player_get(i);
 		wchar_t* prefix = player->type == Human ? L"" : L"BOT - ";;
@@ -201,7 +206,9 @@ int main() {
 		system("CLS");
 		print_header();
 
+		color_cyan();
 		wprintf(L"--- Hauptmenü ---\n");
+		color_white();
 		wprintf(L"[1] Spielen\n");
 		wprintf(L"[2] Bot Benchmark\n");
 		wprintf(L"[3] Beenden\n");
@@ -213,6 +220,8 @@ int main() {
 			scanf("%d", &choice);
 			flush_stdin();
 		}
+
+		wprintf(L"\n");
 
 		if (choice == 1) {
 			Player* player1 = prompt_player(1);

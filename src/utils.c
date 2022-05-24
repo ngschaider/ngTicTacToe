@@ -5,6 +5,23 @@
 
 #include "utils.h"
 
+void set_attr(int attr) {
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(handle, attr);
+}
+
+void color_red() {
+	set_attr(FOREGROUND_RED);
+}
+
+void color_white() {
+	set_attr(FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+}
+
+void color_cyan() {
+	set_attr(FOREGROUND_BLUE | FOREGROUND_GREEN);
+}
+
 void print_at(wchar_t* str, int x, int y) {
 	set_coords(x, y);
 	wprintf(str);
