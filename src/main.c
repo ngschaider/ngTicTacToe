@@ -12,7 +12,6 @@
 #include <math.h>
 #include <time.h>
 
-#include "compat.h"
 #include "game.h"
 #include "bot.h"
 #include "utils.h"
