@@ -134,7 +134,7 @@ bool prompt_play_again(void) {
 	char choice = '_';
 	while (choice != 'j' && choice != 'n') {
 		wprintf(L"Noch ein Spiel? [j/n] ");
-		scanf("%c", &choice);
+		scanf(" %c", &choice);
 		flush_stdin();
 	}
 

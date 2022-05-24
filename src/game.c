@@ -166,7 +166,7 @@ void print_row(int cellsInRow[3], int startIndex) {
 	wprintf(L"██              ██              ██              ██\n");
 }
 
-void game_print(Game* game) {
+/*void game_print(Game* game) {
 	wprintf(L"█████████████████████████");
 	wprintf(L"█████████████████████████\n");
 	for (int y = 0; y < 3; y++) {
@@ -175,6 +175,63 @@ void game_print(Game* game) {
 		wprintf(L"█████████████████████████");
 		wprintf(L"█████████████████████████\n");
 	}
+}*/
+
+void game_print(Game* game) {
+	wprintf(L"██████████████████████████████████████████████████\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██████████████████████████████████████████████████\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██████████████████████████████████████████████████\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██              ██              ██              ██\n");
+	wprintf(L"██████████████████████████████████████████████████\n");
+
+	int original_x;
+	int original_y;
+	if (!get_coords(&original_x, &original_y)) {
+		assert(false);
+		return;
+	}
+
+	for (int i = 0; i < 9; i++) {
+		int x = 4 + ((i % 3) * 16);
+		int y = 2 + ((i/3) * 8);
+
+		if (game->cells[i] == 1) {
+			print_at(L"██      ██", x, y);
+			print_at(L"  ██  ██  ", x, y + 1);
+			print_at(L"    ██    ", x, y + 2);
+			print_at(L"  ██  ██  ", x, y + 3);
+			print_at(L"██      ██", x, y + 4);
+		}
+		else if (game->cells[i] == 2) {
+			print_at(L"  ██████  ", x, y);
+			print_at(L"██      ██", x, y + 1);
+			print_at(L"█        █", x, y + 2);
+			print_at(L"██      ██", x, y + 3);
+			print_at(L"  ██████  ", x, y + 4);
+		}
+	}
+	
+	set_coords(original_x, original_y);
 }
 
 #endif
