@@ -31,23 +31,23 @@ typedef struct StatsStruct {
 	float gamesDrawnPercentage;
 } Stats;
 
-extern Stats game_get_stats(Game*);
+extern Stats GAME_get_stats(Game*);
 
-extern void game_print_extended_stats(Game*);
-extern void game_print_simple_stats(Game*);
+extern void GAME_print_extended_stats(Game*);
+extern void GAME_print_simple_stats(Game*);
 
-extern void game_reset(Game*);
+extern void GAME_reset(Game*);
 
-extern Game game_create(Player*, Player*);
+extern Game GAME_create(Player*, Player*);
 
-extern int game_get_winner(Game*);
+extern int GAME_get_winner(Game*);
 
-extern void game_print(Game*);
+extern void GAME_print(Game*);
 
-extern void game_get_empty_cells(Game*, int*, int*);
+extern void GAME_get_empty_cells(Game*, int*, int*);
 
-extern bool game_is_cell_empty(Game*, int);
+extern bool GAME_is_cell_empty(Game*, int);
 
-extern Game game_copy(Game*);
+extern Game GAME_copy(Game*);
 
 #endif

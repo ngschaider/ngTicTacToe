@@ -19,9 +19,9 @@ Player players[PLAYER_MAX_SIZE];
 
 int human_get_move(Game* game) {
 	system("CLS");
-	game_print(game);
+	GAME_print(game);
 	wprintf(L"\n");
-	game_print_simple_stats(game);
+	GAME_print_simple_stats(game);
 	wprintf(L"\n");
 
 	int choice = 0;
@@ -34,7 +34,7 @@ int human_get_move(Game* game) {
 }
 
 
-void player_add(Player player) {
+void PLAYER_add(Player player) {
 	assert(used < PLAYER_MAX_SIZE);
 
 	player.id = used;
@@ -43,44 +43,44 @@ void player_add(Player player) {
 }
 
 
-void player_init(void) {
+void PLAYER_init(void) {
 	Player human;
 	human.name = L"Mensch";
 	human.type = Human;
 	human.get_move = &human_get_move;
-	player_add(human);
+	PLAYER_add(human);
 
 	Player misterr;
 	misterr.name = L"Mister R.";
 	misterr.type = Bot;
 	misterr.get_move = &misterr_get_move;
-	player_add(misterr);
+	PLAYER_add(misterr);
 
 	Player onelayer;
 	onelayer.name = L"OneLayer";
 	onelayer.type = Bot;
 	onelayer.get_move = &onelayer_get_move;
-	player_add(onelayer);
+	PLAYER_add(onelayer);
 
 	Player twolayer;
 	twolayer.name = L"TwoLayer";
 	twolayer.type = Bot;
 	twolayer.get_move = &twolayer_get_move;
-	player_add(twolayer);
+	PLAYER_add(twolayer);
 
 	Player minimax;
 	minimax.name = L"Minimax";
 	minimax.type = Bot;
 	minimax.get_move = &minimax_get_move;
-	player_add(minimax);
+	PLAYER_add(minimax);
 }
 
-Player* player_get(int id) {
+Player* PLAYER_get(int id) {
 	assert(used > id);
 
 	return &players[id];
 }
 
-int player_get_amount(void) {
+int PLAYER_get_amount(void) {
 	return used;
 }

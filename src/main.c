@@ -26,8 +26,8 @@ int get_choice(Game* game) {
 
 
 void play_game(Game* game, bool verbose) {
-	game_reset(game);
-	while (game_get_winner(game) == -1) {
+	GAME_reset(game);
+	while (GAME_get_winner(game) == -1) {
 		int choice = get_choice(game);
 		assert(choice >= 0 && choice <= 8);
 		game->cells[choice] = game->currentPlayer;
@@ -41,7 +41,7 @@ void play_game(Game* game, bool verbose) {
 		}
 	}
 
-	int winner = game_get_winner(game);
+	int winner = GAME_get_winner(game);
 
 	assert(winner >= 0 && winner <= 2);
 
@@ -57,9 +57,9 @@ void play_game(Game* game, bool verbose) {
 
 	if (verbose) {
 		system("CLS");
-		game_print(game);
+		GAME_print(game);
 		wprintf(L"\n");
-		game_print_simple_stats(game);
+		GAME_print_simple_stats(game);
 		wprintf(L"\n");
 
 		if (winner == 0) {
@@ -100,14 +100,14 @@ Player* prompt_player(int player_number) {
 	color_cyan();
 	wprintf(L"--- Typ für Spieler %d ---\n", player_number);
 	color_white();
-	for (int i = 0; i < player_get_amount(); i++) {
-		Player* player = player_get(i);
+	for (int i = 0; i < PLAYER_get_amount(); i++) {
+		Player* player = PLAYER_get(i);
 		wchar_t* prefix = player->type == Human ? L"" : L"BOT - ";;
 		wprintf(L"[%d] %ls%ls\n", i + 1, prefix, player->name);
 	}
 
 	int choice = 0;
-	while (choice < 1 || choice > player_get_amount()) {
+	while (choice < 1 || choice > PLAYER_get_amount()) {
 		wprintf(L"Ihre Auswahl: ");
 		scanf("%d", &choice);
 		flush_stdin();
@@ -116,8 +116,8 @@ Player* prompt_player(int player_number) {
 	wprintf(L"\n");
 
 	int player_id = choice - 1;
-	assert(player_id >= 0 && player_id < player_get_amount());
-	return player_get(player_id);
+	assert(player_id >= 0 && player_id < PLAYER_get_amount());
+	return PLAYER_get(player_id);
 }
 
 int prompt_amount_of_rounds() {
@@ -155,24 +155,24 @@ void bot_benchmark() {
 	print_header();
 	wprintf(L"------------------------------ BOT BENCHMARK (%d ROUNDS) ------------------------------\n", amount_of_rounds);
 	wprintf(L"                               Spieler 1 gew.     Spieler 2 gew.     Unentschieden\n");
-	for (int index1 = 0; index1 < player_get_amount(); index1++) {
-		Player* player1 = player_get(index1);
+	for (int index1 = 0; index1 < PLAYER_get_amount(); index1++) {
+		Player* player1 = PLAYER_get(index1);
 		if (player1->type == Human) {
 			continue;
 		}
-		for (int index2 = 0; index2 < player_get_amount(); index2++) {
-			Player* player2 = player_get(index2);
+		for (int index2 = 0; index2 < PLAYER_get_amount(); index2++) {
+			Player* player2 = PLAYER_get(index2);
 			if (player2->type == Human) {
 				continue;
 			}
 
-			Game game = game_create(player1, player2);
+			Game game = GAME_create(player1, player2);
 
 			for (int i = 0; i < amount_of_rounds; i++) {
 				play_game(&game, false);
 			}
 
-			Stats stats = game_get_stats(&game);
+			Stats stats = GAME_get_stats(&game);
 			wprintf(L"%-9ls  gegen  %-9ls:  %14.2f%%    %14.2f%%    %13.2f%%\n", player1->name, player2->name, stats.gamesWon1Percentage, stats.gamesWon2Percentage, stats.gamesDrawnPercentage);
 		}
 	}
@@ -189,7 +189,7 @@ int main() {
 	_setmode(_fileno(stdout), _O_U16TEXT);
 
 	// setup bots and human player interface
-	player_init();
+	PLAYER_init();
 
 	// Setup font family and font size
 	CONSOLE_FONT_INFOEX cfi = {
@@ -228,7 +228,7 @@ int main() {
 			Player* player2 = prompt_player(2);
 
 			// create a game (this will be reused for folllowing games as it will also keep track of stats)
-			Game game = game_create(player1, player2);
+			Game game = GAME_create(player1, player2);
 
 			if (game.player1->type == Human || game.player2->type == Human) {
 				bool play_again = true;
@@ -246,7 +246,7 @@ int main() {
 
 			system("CLS");
 			print_header();
-			game_print_extended_stats(&game);
+			GAME_print_extended_stats(&game);
 			system("PAUSE");
 		}
 		else if (choice == 2) {

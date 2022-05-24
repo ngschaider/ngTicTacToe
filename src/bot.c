@@ -8,7 +8,7 @@ int misterr_get_move(Game* game) {
 	int count;
 	int empty[9];
 
-	game_get_empty_cells(game, empty, &count);
+	GAME_get_empty_cells(game, empty, &count);
 	assert(count >= 1 && count <= 9);
 
 	if (count == 1) {
@@ -23,7 +23,7 @@ int onelayer_get_move(Game* game) {
 	int count;
 	int empty[9];
 
-	game_get_empty_cells(game, empty, &count);
+	GAME_get_empty_cells(game, empty, &count);
 	assert(count >= 1 && count <= 9);
 
 	if (count == 1) {
@@ -34,10 +34,10 @@ int onelayer_get_move(Game* game) {
 	// in the copied board and see if it would be the winning move
 	for (int i = 0; i < count; i++) {
 		int index = empty[i];
-		Game copy = game_copy(game);
+		Game copy = GAME_copy(game);
 		copy.cells[index] = game->currentPlayer;
 
-		if (game_get_winner(&copy) == game->currentPlayer) {
+		if (GAME_get_winner(&copy) == game->currentPlayer) {
 			return index;
 		}
 	}
@@ -50,7 +50,7 @@ int twolayer_get_move(Game* game) {
 	int count1;
 	int empty1[9];
 
-	game_get_empty_cells(game, empty1, &count1);
+	GAME_get_empty_cells(game, empty1, &count1);
 	assert(count1 >= 1 && count1 <= 9);
 
 	if (count1 == 1) {
@@ -61,25 +61,25 @@ int twolayer_get_move(Game* game) {
 	// in the copied board and see if it would be the winning move
 	for (int i = 0; i < count1; i++) {
 		int index1 = empty1[i];
-		Game copy1 = game_copy(game);
+		Game copy1 = GAME_copy(game);
 		copy1.cells[index1] = game->currentPlayer;
 
-		if (game_get_winner(&copy1) == game->currentPlayer) {
+		if (GAME_get_winner(&copy1) == game->currentPlayer) {
 			return index1;
 		}
 
 		int count2;
 		int empty2[9];
 
-		game_get_empty_cells(game, empty2, &count2);
+		GAME_get_empty_cells(game, empty2, &count2);
 		assert(count2 >= 1 && count2 <= 9);
 
 		for (int j = 0; j < count2; j++) {
 			int index2 = empty2[j];
-			Game copy2 = game_copy(game);
+			Game copy2 = GAME_copy(game);
 			copy2.cells[index2] = game->currentPlayer;
 
-			if (game_get_winner(&copy2) == game->currentPlayer) {
+			if (GAME_get_winner(&copy2) == game->currentPlayer) {
 				return index2;
 			}
 		}
@@ -101,7 +101,7 @@ int twolayer_get_move(Game* game) {
 
 
 int minimax_helper(Game* game, int depth, bool isMaximizerPlaying) {
-	int winner = game_get_winner(game);
+	int winner = GAME_get_winner(game);
 	if (winner == 0) {
 		// Draw
 		return 0;
@@ -115,7 +115,7 @@ int minimax_helper(Game* game, int depth, bool isMaximizerPlaying) {
 
 	int empty[9];
 	int count;
-	game_get_empty_cells(game, empty, &count);
+	GAME_get_empty_cells(game, empty, &count);
 
 	if (isMaximizerPlaying) {
 		int best = -100;
@@ -159,7 +159,7 @@ int minimax_helper(Game* game, int depth, bool isMaximizerPlaying) {
 }
 
 int minimax_get_move(Game* game) {
-	Game copy = game_copy(game);
+	Game copy = GAME_copy(game);
 
 	bool isMaximizer = copy.currentPlayer == 1;
 
@@ -168,7 +168,7 @@ int minimax_get_move(Game* game) {
 
 	int empty[9];
 	int count;
-	game_get_empty_cells(game, empty, &count);
+	GAME_get_empty_cells(game, empty, &count);
 	for (int i = 0; i < count; i++) {
 		int index = empty[i];
 		copy.cells[index] = copy.currentPlayer;

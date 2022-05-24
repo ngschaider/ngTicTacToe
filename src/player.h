@@ -18,8 +18,8 @@ typedef struct PlayerStruct {
 } Player;
 
 
-extern void player_init(void);
-extern Player* player_get(int);
-extern int player_get_amount(void);
+extern void PLAYER_init(void);
+extern Player* PLAYER_get(int);
+extern int PLAYER_get_amount(void);
 
 #endif

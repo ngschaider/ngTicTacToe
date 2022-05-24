@@ -10,7 +10,7 @@
 
 #ifndef DONOTDEFINE_Utilities
 
-Stats game_get_stats(Game* game) {
+Stats GAME_get_stats(Game* game) {
 	Stats stats;
 	stats.gamesTotal = game->gamesDrawn + game->gamesWon1 + game->gamesWon2;
 	stats.gamesDrawn = game->gamesDrawn;
@@ -33,11 +33,11 @@ Stats game_get_stats(Game* game) {
  * @param int* count The place to store the number of empty cells
  * @return int* out The place to store the cell indices (this gets dynamically allocated)
  */
-void game_get_empty_cells(Game* game, int* out, int* count) {
+void GAME_get_empty_cells(Game* game, int* out, int* count) {
 	// fill the array with the indices
 	int index = 0;
 	for (int i = 0; i < 9; i++) {
-		if (game_is_cell_empty(game, i)) {
+		if (GAME_is_cell_empty(game, i)) {
 			out[index] = i;
 			index++;
 		}
@@ -46,12 +46,12 @@ void game_get_empty_cells(Game* game, int* out, int* count) {
 	*count = index;
 }
 
-bool game_is_cell_empty(Game* game, int i) {
+bool GAME_is_cell_empty(Game* game, int i) {
 	return game->cells[i] == 0;
 }
 
-Game game_copy(Game* game) {
-	Game copy = game_create(game->player1, game->player2);
+Game GAME_copy(Game* game) {
+	Game copy = GAME_create(game->player1, game->player2);
 	for (int i = 0; i < 9; i++) {
 		copy.cells[i] = game->cells[i];
 	}
@@ -68,7 +68,7 @@ Game game_copy(Game* game) {
 
 #ifndef DONOTDEFINE_Lifecycle_Functions
 
-Game game_create(Player* player1, Player* player2) {
+Game GAME_create(Player* player1, Player* player2) {
 	Game game = {
 		{0, 0, 0, 0, 0, 0, 0, 0, 0}, // int cells[9];
 		player1, // Player player1;
@@ -81,12 +81,12 @@ Game game_create(Player* player1, Player* player2) {
 		0, // int gamesWon2;
 	};
 
-	game_reset(&game);
+	GAME_reset(&game);
 
 	return game;
 }
 
-void game_reset(Game* game) {
+void GAME_reset(Game* game) {
 	for (int i = 0; i < 9; i++) {
 		game->cells[i] = 0;
 	}
@@ -99,15 +99,15 @@ void game_reset(Game* game) {
 
 #ifndef DONOTDEFINE_Printing
 
-void game_print_simple_stats(Game* game) {
-	Stats stats = game_get_stats(game);
+void GAME_print_simple_stats(Game* game) {
+	Stats stats = GAME_get_stats(game);
 	wprintf(L"Spiele gesamt: %d\t", stats.gamesTotal);
 	wprintf(L"%ls gewonnen: %d\t", game->player1->name, stats.gamesWon1);
 	wprintf(L"%ls gewonnen: %d\n", game->player2->name, stats.gamesWon2);
 }
 
-void game_print_extended_stats(Game* game) {
-	Stats stats = game_get_stats(game);
+void GAME_print_extended_stats(Game* game) {
+	Stats stats = GAME_get_stats(game);
 
 	wprintf(L"                          Spieler 1    Spieler 2\n");
 	wprintf(L"Typ                       %9ls    %9ls\n", game->player1->name, game->player2->name);
@@ -120,7 +120,7 @@ void game_print_extended_stats(Game* game) {
 	wprintf(L"\n");
 }
 
-void game_print(Game* game) {
+void GAME_print(Game* game) {
 	wprintf(L"██████████████████████████████████████████████████\n");
 	wprintf(L"██              ██              ██              ██\n");
 	wprintf(L"██              ██              ██              ██\n");
@@ -190,7 +190,7 @@ bool check(int* cells, int offset, int stepsize) {
  * @description Returns the winner of the given game by looking at the cell's states
  * @return int -1 if the game has not ended yet, 0 if the game is a draw, 1 if player1 won, 2 if player2 won
  */
-int game_get_winner(Game* game) {
+int GAME_get_winner(Game* game) {
 	// Todo: Don't even bother to check this when the game is not at least 5 moves old
 	// A tic-tac-toe game is unwinnable before 5 moves have been made
 
