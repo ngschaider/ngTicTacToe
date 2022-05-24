@@ -120,63 +120,6 @@ void game_print_extended_stats(Game* game) {
 	wprintf(L"\n");
 }
 
-void print_cell_part(int cell, int part, int index) {
-	assert(part >= 0 && part <= 4);
-	assert(cell >= 0 && cell <= 2);
-
-	if (cell == 0) {
-		if (part == 0 || part == 1 || part == 3 || part == 4) {
-			wprintf(L"          ");
-		}
-		else if (part == 2) {
-			wprintf(L"     %d    ", index + 1);
-		}
-	}
-	else if (cell == 1) {
-		if (part == 0 || part == 4) {
-			wprintf(L"XX      XX");
-		}
-		else if (part == 1 || part == 3) {
-			wprintf(L"  XX  XX  ");
-		}
-		else if (part == 2) {
-			wprintf(L"    XX    ");
-		}
-	}
-	else if (cell == 2) {
-		if (part == 0 || part == 4) {
-			wprintf(L"    OO    ");
-		}
-		else if (part == 1 || part == 2 || part == 3) {
-			wprintf(L"OO      OO");
-		}
-	}
-}
-
-void print_row(int cellsInRow[3], int startIndex) {
-	wprintf(L"██              ██              ██              ██\n");
-	for (int part = 0; part < 5; part++) {
-		wprintf(L"██  ");
-		for (int i = 0; i < 3; i++) {
-			print_cell_part(cellsInRow[i], part, i + startIndex);
-			wprintf(L"  ██  ");
-		}
-		wprintf(L"\n");
-	}
-	wprintf(L"██              ██              ██              ██\n");
-}
-
-/*void game_print(Game* game) {
-	wprintf(L"█████████████████████████");
-	wprintf(L"█████████████████████████\n");
-	for (int y = 0; y < 3; y++) {
-		int cellsInRow[] = { game->cells[y * 3], game->cells[y * 3 + 1], game->cells[y * 3 + 2] };
-		print_row(cellsInRow, y * 3);
-		wprintf(L"█████████████████████████");
-		wprintf(L"█████████████████████████\n");
-	}
-}*/
-
 void game_print(Game* game) {
 	wprintf(L"██████████████████████████████████████████████████\n");
 	wprintf(L"██              ██              ██              ██\n");
