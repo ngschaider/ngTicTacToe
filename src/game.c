@@ -10,6 +10,24 @@
 
 #ifndef DONOTDEFINE_Utilities
 
+Stats game_get_stats(Game* game) {
+	Stats stats;
+	stats.gamesTotal = game->gamesDrawn + game->gamesWon1 + game->gamesWon2;
+	stats.gamesDrawn = game->gamesDrawn;
+	stats.gamesDrawnPercentage = (float)game->gamesDrawn / stats.gamesTotal * 100;
+	stats.gamesWon1 = game->gamesWon1;
+	stats.gamesWon1Percentage = (float)game->gamesWon1 / stats.gamesTotal * 100;
+	stats.gamesWon2 = game->gamesWon2;
+	stats.gamesWon2Percentage = (float)game->gamesWon2 / stats.gamesTotal * 100;
+	stats.gamesLost1 = game->gamesWon2;
+	stats.gamesLost1Percentage = stats.gamesWon2Percentage;
+	stats.gamesLost2 = game->gamesWon1;
+	stats.gamesLost2Percentage = stats.gamesWon1Percentage;
+
+
+	return stats;
+}
+
 /**
  * @description Calculate an array containing the indices of empty cells
  * @param int* count The place to store the number of empty cells
@@ -38,11 +56,10 @@ Game game_copy(Game* game) {
 		copy.cells[i] = game->cells[i];
 	}
 	copy.currentPlayer = game->currentPlayer;
-	copy.gamesTotal = game->gamesTotal;
+
+	copy.gamesDrawn = game->gamesDrawn;
 	copy.gamesWon1 = game->gamesWon1;
-	copy.gamesLost1 = game->gamesLost1;
 	copy.gamesWon2 = game->gamesWon2;
-	copy.gamesLost2 = game->gamesLost2;
 
 	return copy;
 }
@@ -59,11 +76,9 @@ Game game_create(Player* player1, Player* player2) {
 
 		1, // int currentPlayer;
 
-		0, // int gamesTotal;
+		0, // int gamesDrawn;
 		0, // int gamesWon1;
-		0, // int gamesLost1;
 		0, // int gamesWon2;
-		0, // int gamesLost2;
 	};
 
 	game_reset(&game);
@@ -85,20 +100,23 @@ void game_reset(Game* game) {
 #ifndef DONOTDEFINE_Printing
 
 void game_print_simple_stats(Game* game) {
-	wprintf(L"Spiele gesamt: %d\t", game->gamesTotal);
-	wprintf(L"%ls gewonnen: %d\t", game->player1->name, game->gamesWon1);
-	wprintf(L"%ls gewonnen: %d\n", game->player2->name, game->gamesWon2);
+	Stats stats = game_get_stats(game);
+	wprintf(L"Spiele gesamt: %d\t", stats.gamesTotal);
+	wprintf(L"%ls gewonnen: %d\t", game->player1->name, stats.gamesWon1);
+	wprintf(L"%ls gewonnen: %d\n", game->player2->name, stats.gamesWon2);
 }
 
 void game_print_extended_stats(Game* game) {
+	Stats stats = game_get_stats(game);
+
 	wprintf(L"                          Spieler 1    Spieler 2\n");
 	wprintf(L"Typ                       %9ls    %9ls\n", game->player1->name, game->player2->name);
-	wprintf(L"Spiele gewonnen           %9d    %9d\n", game->gamesWon1, game->gamesWon2);
-	wprintf(L"Spiele gewonnen (%%)       %9.2f    %9.2f\n", (double)game->gamesWon1 / game->gamesTotal * 100, (double)game->gamesWon2 / game->gamesTotal * 100);
-	wprintf(L"Spiele verloren           %9d    %9d\n", game->gamesLost1, game->gamesLost2);
-	wprintf(L"Spiele verloren (%%)       %9.2f    %9.2f\n", (double)game->gamesLost1 / game->gamesTotal * 100, (double)game->gamesLost2 / game->gamesTotal * 100);
-	wprintf(L"Spiele unentschieden      %9d\n", game->gamesTotal - game->gamesLost1 - game->gamesWon1);
-	wprintf(L"Spiele unentschieden (%%)  %9.2f\n", ((double)game->gamesTotal - game->gamesLost1 - game->gamesWon1) / game->gamesTotal * 100);
+	wprintf(L"Spiele gewonnen           %9d    %9d\n", stats.gamesWon1, stats.gamesWon2);
+	wprintf(L"Spiele gewonnen (%%)       %9.2f    %9.2f\n", stats.gamesWon1Percentage, stats.gamesWon2Percentage);
+	wprintf(L"Spiele verloren           %9d    %9d\n", stats.gamesLost1, stats.gamesLost2);
+	wprintf(L"Spiele verloren (%%)       %9.2f    %9.2f\n", stats.gamesLost1Percentage, stats.gamesLost2Percentage);
+	wprintf(L"Spiele unentschieden      %9d\n", stats.gamesDrawn);
+	wprintf(L"Spiele unentschieden (%%)  %9.2f\n", stats.gamesDrawnPercentage);
 	wprintf(L"\n");
 }
 

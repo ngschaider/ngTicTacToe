@@ -44,17 +44,16 @@ void play_game(Game* game, bool verbose) {
 
 	int winner = game_get_winner(game);
 
-	game->gamesTotal++;
-
 	assert(winner >= 0 && winner <= 2);
 
+	if (winner == 0) {
+		game->gamesDrawn++;
+	}
 	if (winner == 1) {
 		game->gamesWon1++;
-		game->gamesLost2++;
 	}
 	else if (winner == 2) {
 		game->gamesWon2++;
-		game->gamesLost1++;
 	}
 
 	if (verbose) {
@@ -169,10 +168,8 @@ void bot_benchmark() {
 				play_game(&game, false);
 			}
 
-			double won1 = (double)game.gamesWon1 / game.gamesTotal * 100;
-			double won2 = (double)game.gamesWon2 / game.gamesTotal * 100;
-			double draw = ((double)game.gamesTotal - game.gamesWon1 - game.gamesWon2) / game.gamesTotal * 100;
-			wprintf(L"%-9ls  gegen  %-9ls:  %14.2f%%    %14.2f%%    %13.2f%%\n", player1->name, player2->name, won1, won2, draw);
+			Stats stats = game_get_stats(&game);
+			wprintf(L"%-9ls  gegen  %-9ls:  %14.2f%%    %14.2f%%    %13.2f%%\n", player1->name, player2->name, stats.gamesWon1Percentage, stats.gamesWon2Percentage, stats.gamesDrawnPercentage);
 		}
 	}
 	wprintf(L"\n");

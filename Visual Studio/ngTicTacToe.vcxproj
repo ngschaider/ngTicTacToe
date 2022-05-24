@@ -27,7 +27,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\bot.h" />
-    <ClInclude Include="..\src\compat.h" />
     <ClInclude Include="..\src\game.h" />
     <ClInclude Include="..\src\player.h" />
     <ClInclude Include="..\src\utils.h" />

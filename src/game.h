@@ -12,12 +12,26 @@ typedef struct GameStruct {
 	int currentPlayer; // will be 1 or 2 depending on which player's turn it is
 
 	// Statistics
+	int gamesDrawn;
+	int gamesWon1;
+	int gamesWon2;
+} Game;
+
+typedef struct StatsStruct {
 	int gamesTotal;
 	int gamesWon1;
+	float gamesWon1Percentage;
 	int gamesLost1;
+	float gamesLost1Percentage;
 	int gamesWon2;
+	float gamesWon2Percentage;
 	int gamesLost2;
-} Game;
+	float gamesLost2Percentage;
+	int gamesDrawn;
+	float gamesDrawnPercentage;
+} Stats;
+
+extern Stats game_get_stats(Game*);
 
 extern void game_print_extended_stats(Game*);
 extern void game_print_simple_stats(Game*);

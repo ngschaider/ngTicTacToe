@@ -35,9 +35,6 @@
     <ClInclude Include="..\src\bot.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\compat.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\game.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
