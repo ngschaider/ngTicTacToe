@@ -100,7 +100,7 @@ void print_header(void) {
 
 Player* prompt_player(int player_number) {
 	color_cyan();
-	wprintf(L"--- Typ für Spieler %d ---\n", player_number);
+	wprintf(L"Typ für Spieler %d\n", player_number);
 	color_white();
 
 	wchar_t* entries[PLAYER_MAX_SIZE];
@@ -129,7 +129,7 @@ Player* prompt_player(int player_number) {
 
 int prompt_amount_of_rounds() {
 	color_cyan();
-	wprintf(L"--- Rundenanzahl ---\n");
+	wprintf(L"Rundenanzahl\n");
 	color_white();
 	int choice = 0;
 	while (choice < 1) {
@@ -163,7 +163,9 @@ void bot_benchmark() {
 	int amount_of_rounds = prompt_amount_of_rounds();
 	system("CLS");
 	print_header();
-	wprintf(L"------------------------------ BOT BENCHMARK (%d ROUNDS) ------------------------------\n", amount_of_rounds);
+	color_cyan();
+	wprintf(L"BOT BENCHMARK (%d ROUNDS)\n", amount_of_rounds);
+	color_white();
 	wprintf(L"                               Spieler 1 gew.     Spieler 2 gew.     Unentschieden\n");
 	for (int index1 = 0; index1 < PLAYER_get_amount(); index1++) {
 		Player* player1 = PLAYER_get(index1);
@@ -218,7 +220,7 @@ int main() {
 
 		
 		color_cyan();
-		wprintf(L"--- Hauptmenü ---\n");
+		wprintf(L"Hauptmenü\n");
 		color_white();
 
 		wchar_t* mainMenuEntries[3] = { L"Spielen", L"Bot Benchmark", L"Beenden" };

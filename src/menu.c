@@ -32,12 +32,12 @@ void MENU_print(Menu* menu) {
 	for (int i = 0; i < menu->size; i++) {
 		if (i == menu->selected) {
 			color_cyan();
-			wprintf(L"→");
+			wprintf(L" -→ ");
 		}
 		else {
-			wprintf(L" ");
+			wprintf(L"    ");
 		}
-		wprintf(L"[%d] ", i + 1);
+		//wprintf(L"[%d] ", i + 1);
 		wchar_t* entry = menu->entries[i];
 		wprintf(L"%ls", entry);
 		wprintf(L"\n");

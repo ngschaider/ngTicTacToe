@@ -4,6 +4,48 @@
 #include "bot.h"
 #include "game.h"
 
+int simpler_get_move(Game* game) {
+	int count;
+	int empty[9];
+
+	GAME_get_empty_cells(game, empty, &count);
+	assert(count >= 1 && count <= 9);
+
+	if (count == 1) {
+		return empty[0];
+	}
+
+	int enemy = game->currentPlayer == 1 ? 2 : 1;
+
+	// attack for instant win
+	for (int i = 0; i < count; i++) {
+		Game copy = GAME_copy(game);
+		int index = empty[i];
+		copy.cells[index] = copy.currentPlayer;
+		if (GAME_get_winner(&copy) == copy.currentPlayer) {
+			return index;
+		}
+	}
+
+	// defend to prevent instant win of enemy
+	for (int i = 0; i < count; i++) {
+		Game copy = GAME_copy(game);
+		int index = empty[i];
+		copy.cells[index] = enemy;
+		if (GAME_get_winner(&copy) == enemy) {
+			return index;
+		}
+	}
+
+	// prevent edge cases
+	if (game->cells[0] == enemy && game->cells[8]) {
+	}
+
+
+	int randomIndex = rand() % (count - 1) + 1;
+	return empty[randomIndex];
+}
+
 int misterr_get_move(Game* game) {
 	int count;
 	int empty[9];

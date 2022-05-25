@@ -54,6 +54,12 @@ void PLAYER_init(void) {
 	misterr.get_move = &misterr_get_move;
 	PLAYER_add(misterr);
 
+	Player simpler;
+	simpler.name = L"Simpler";
+	simpler.type = Bot;
+	simpler.get_move = &simpler_get_move;
+	PLAYER_add(simpler);
+
 	Player onelayer;
 	onelayer.name = L"OneLayer";
 	onelayer.type = Bot;
