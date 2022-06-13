@@ -109,7 +109,7 @@ Player* prompt_player(int player_number) {
 		wchar_t* prefix = player->type == Human ? L"" : L"BOT - ";
 
 		wchar_t* result = calloc(100, sizeof(wchar_t));
-		wsprintf(result, L"%ls%ls", prefix, player->name);
+		swprintf(result, 100, L"%ls%ls", prefix, player->name);
 		entries[i] = result;
 	}
 
@@ -147,9 +147,9 @@ int prompt_amount_of_rounds() {
 bool prompt_play_again(void) {
 	wchar_t* entries[2] = { L"Ja", L"Nein" };
 	Menu menu = MENU_create(entries, 2);
-	
+
 	color_cyan();
-	wprintf(L"Noch ein Spiel?");
+	wprintf(L"Noch ein Spiel?\n");
 	color_white();
 	int choice = MENU_prompt(&menu);
 
@@ -218,7 +218,7 @@ int main() {
 		system("CLS");
 		print_header();
 
-		
+
 		color_cyan();
 		wprintf(L"Hauptmenü\n");
 		color_white();

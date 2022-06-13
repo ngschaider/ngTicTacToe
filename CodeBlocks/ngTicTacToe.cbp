@@ -35,7 +35,6 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../src/bot.h" />
-		<Unit filename="../src/compat.h" />
 		<Unit filename="../src/game.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -43,10 +42,14 @@
 		<Unit filename="../src/main.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/minimax.c">
+		<Unit filename="../src/menu.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="../src/minimax.h" />
+		<Unit filename="../src/menu.h" />
+		<Unit filename="../src/player.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../src/player.h" />
 		<Unit filename="../src/utils.c">
 			<Option compilerVar="CC" />
 		</Unit>

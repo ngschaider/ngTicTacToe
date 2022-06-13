@@ -16,18 +16,19 @@ Player players[PLAYER_MAX_SIZE];
 
 
 int human_get_move(Game* game) {
-	system("CLS");
-	GAME_print(game);
-	wprintf(L"\n");
-	GAME_print_simple_stats(game);
-	wprintf(L"\n");
-
 	int choice = 0;
-	while (choice < 1 || choice > 9) {
+	do {
+        system("CLS");
+        GAME_print(game);
+        wprintf(L"\n");
+        GAME_print_simple_stats(game);
+        wprintf(L"\n");
+
 		wprintf(L"Ihre Auswahl: ");
 		scanf("%d", &choice);
 		flush_stdin();
-	}
+	}while (choice < 1 || choice > 9 || !GAME_is_cell_empty(game, choice - 1));
+
 	return choice - 1;
 }
 
